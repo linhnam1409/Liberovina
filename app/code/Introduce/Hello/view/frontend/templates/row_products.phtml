@@ -1,0 +1,14 @@
+<?php 
+/** @var \Introduce\Hello\Block\AdminBlock $block */
+?>
+
+
+<div class="section product-slide1">
+	<div class="product">
+		<?php //echo $this->getLayout()->createBlock("Magento\CatalogWidget\Block\Product\ProductsList")->setTitle("")->setShowPager("0")->setProductsCount("13")->setConditionsEncoded("^[`1`:^[`type`:`Magento||CatalogWidget||Model||Rule||Condition||Combine`,`aggregator`:`all`,`value`:`1`,`new_child`:``^],`1--1`:^[`type`:`Magento||CatalogWidget||Model||Rule||Condition||Product`,`attribute`:`sku`,`operator`:`()`,`value`:`WS12, WT09, MT07, 24-WB04`^]^]")->setTemplate("product/widget/content/grid.phtml")->toHtml(); ?>
+		<?php echo $block->getProductListWidget("23");?>
+	</div>
+	<div class="promotion-slider">
+		<?php echo $block->getSliderWidget("20");?>
+	</div>
+</div>

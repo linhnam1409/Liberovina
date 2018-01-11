@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Introduce_Hello::css/myStyle.css"/>
+        <script src="Introduce_Hello::js/jquery-1.11.3.min.js"/>
+        <script src="Introduce_Hello::js/myScript.js"/>
+        <title></title>
+    </head>
+    <body>
+        <referenceContainer name="content">
+        	<container name="global.wrap" htmlTag="div" htmlClass="myWrap">
+	        	<container name="test.left" htmlTag="div" htmlClass="myLeft">
+	       			<block class="Magento\Framework\View\Element\Template" name="" template="Introduce_Hello::test_index_section.phtml"></block>
+	       		</container>
+	        	<container name="test.mid" htmlTag="div" htmlClass="myMid">
+	        		<container name="test.header" htmlTag="div" htmlClass="myHeader">
+	        			<block class="Magento\Framework\View\Element\Template" name="" template="Introduce_Hello::test_index_section.phtml"></block>
+	        		</container>
+	        		<container name="test.body" htmlTag="div" htmlClass="myBody">
+	        			<block class="Introduce\Hello\Block\AdminAccount" name="" template="Introduce_Hello::test_index_select.phtml"></block>
+	        		</container>
+	        		<container name="test.footer" htmlTag="div" htmlClass="myFooter">
+	        			<block class="Introduce\Hello\Block\InsertAdminAccountBlock" name="" template="Introduce_Hello::test_index_insert.phtml"></block>
+	        		</container>
+	            </container>
+	       	</container>
+        </referenceContainer>
+    </body>
+</page>
