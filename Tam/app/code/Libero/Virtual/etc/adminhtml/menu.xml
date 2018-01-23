@@ -1,0 +1,6 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Libero_Virtual::virtual" title="Virtual Account" translate="title" module="Libero_Virtual" sortOrder="190" resource="Libero_Virtual::virtual"/>
+        <add id="Libero_Virtual::index" title="Manager Statement" translate="title" module="Libero_Virtual" parent="Libero_Virtual::virtual" sortOrder="10" action="virtual/index" resource="Libero_Virtual::index"/>
+    </menu>
+</config>

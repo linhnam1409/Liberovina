@@ -1,0 +1,10 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Libero_RMA::parent" title="Return Management" translate="title" module="Libero_RMA" sortOrder="190" resource="Libero_RMA::parent" parent="Magento_Sales::sales"/>
+        <add id="Libero_RMA::index" title="RMA Status" translate="title" module="Libero_RMA" parent="Libero_RMA::parent" sortOrder="0" resource="Libero_RMA::index"/>
+        <add id="Libero_RMA::rma_request" title="RMA Request" translate="title" module="Libero_RMA" parent="Libero_RMA::index" sortOrder="0" action="rma/requestproduct/index" resource="Libero_RMA::rma_request"/>
+        <add id="Libero_RMA::rma_status" title="Workflow and Statuses" translate="title" module="Libero_RMA" parent="Libero_RMA::index" sortOrder="1" action="rma/status/index" resource="Libero_RMA::rma_status"/>
+        <add id="Libero_RMA::rma_customfield" title="Manage Custom Fields" translate="title" module="Libero_RMA" parent="Libero_RMA::index" sortOrder="2" action="rma/condition/index" resource="Libero_RMA::rma_customfield"/>
+        <add id="Libero_RMA::rma_option" title="Manage Options" translate="title" module="Libero_RMA" parent="Libero_RMA::index" sortOrder="3" action="rma/requestproduct/index" resource="Libero_RMA::rma_option"/>
+    </menu>
+</config>
