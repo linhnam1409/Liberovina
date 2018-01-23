@@ -22,6 +22,8 @@ Make module return product in policy rma
 	
 	- Running command for minifiles static : php bin\magento setup:static-content:deploy
 
+	- Import file *.sql for sample data.
+
 ## Running the tests
 
 	On Front-End:
