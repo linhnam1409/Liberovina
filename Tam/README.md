@@ -1,4 +1,4 @@
-# Moduel RMA
+# Module RMA
 
 Make module return product in policy rma
 
