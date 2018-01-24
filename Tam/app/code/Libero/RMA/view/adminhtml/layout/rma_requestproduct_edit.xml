@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../../lib/internal/Magento/Framework/View/Layout/etc/page_configuration.xsd">
-    <body>
-        <referenceContainer name="content">
-            <block class="Libero\RMA\Block\Adminhtml\RequestProduct\Edit"  name="adminhtml.block.requestproduct.edit" as="request_product_edit" template="Libero_RMA::edit/request_product.phtml" />
-        </referenceContainer>
-    </body>
-</page>

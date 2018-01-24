@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../../lib/internal/Magento/Framework/View/Layout/etc/page_configuration.xsd">
-    <body>
-        <referenceContainer name="content">
-            <block class="Libero\Virtual\Block\Adminhtml\Statement\Edit"  name="adminhtml.block.statement.edit" as="statemtn_edit" template="Libero_Virtual::edit/statement_info.phtml" />
-        </referenceContainer>
-    </body>
-</page>
