@@ -1,0 +1,369 @@
+<?php
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$dataReturnProduct = $block->getDataReturnProduct();
+$dataOrder = $block->getOrderInXDay();
+$customerId = $block->getIdCustomer();
+?>
+<style>
+    .col{
+        vertical-align: middle;
+
+    }
+    .account .column.main .block:not(.widget) .block-title{
+        border-bottom: none;
+    }
+
+</style>
+<div class="calendar" style="margin-bottom: 5%">
+    <input type="text" id="from_date" style="width: auto;vertical-align: middle;">
+    ~
+    <input type="text" id="to_date" style="width: auto;vertical-align: middle; vertical-align: middle;">
+    <div class="primary" style="display: inline-block;vertical-align: middle;">
+        <button type="button" class="action save primary" title="<?php echo $this->helper(\Magento\Framework\EscapeHelper::class)->escapeHtmlAttr(__('Find')) ?>"><span><?php echo $block->escapeHtml(__('Find')) ?></span></button>
+    </div>
+</div>
+<div class="block block-dashboard-orders">
+    <div class="block-title order">
+        <strong>Recent Orders</strong>
+    </div>
+    <div class="block-content">
+        <div class="table-wrapper orders-history">
+            <table class="data table table-order-items history" id="my-orders-table">
+                <tbody>
+                <?php foreach($dataOrder as $_order): ?>
+                    <?php
+                        $incrementId = $_order->getIncrementId();
+                        $datePurchase = $_order->getCreatedAt();
+                        $orderTotal = $_order->getTotalDue();
+                        $statusOrder = $_order->getStatusLabel();
+                        $name = $_order->getCustomerFirstname()." ".$_order->getCustomerLastname();
+                    ?>
+                    <tr>
+                        <td data-th="Order #" class="col id">
+                            <span><?php echo $datePurchase; ?></span>
+                            <span>(<?php echo $incrementId ?>)</span>
+                            <br/>
+                            <span>Price: <?php echo number_format($orderTotal,0,',','.'); ?> VND</span>
+                        </td>
+                        <td data-th="Date" class="col date">
+                            <?php echo $name; ?>
+                        </td>
+                        <td data-th="Ship To" class="col shipping">
+                            <?php echo $statusOrder ?>
+                        </span>
+                        </td>
+                        <td data-th="Order Total" class="col total">
+                            <span class="price"><?php echo $orderTotal; ?> VND</span>
+                        </td>
+                        <td data-th="Status" class="col status">
+                            <div class="primary">
+                                <button type="button" id="request_return_<?php echo $incrementId;  ?>" class="action save primary" title="<?php echo __("Request Return"); ?>"><span><?php echo __("Request Return"); ?></span></button>
+                            </div>
+
+                        </td>
+                    </tr>
+
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<?php foreach($dataOrder as $_order): ?>
+    <?php
+        $incrementId = $_order->getIncrementId();
+        $datePurchase = $_order->getCreatedAt();
+        $orderTotal = $_order->getTotalDue();
+        $statusOrder = $_order->getStatusLabel();
+        $name = $_order->getCustomerFirstname()." ".$_order->getCustomerLastname();
+    ?>
+<div id="popup-modal_<?php echo $incrementId;  ?>" style="display: none">
+    <?php
+    $orderCollection = $objectManager->create('\Magento\Sales\Model\Order')->load($_order->getData("entity_id"));
+    ?>
+    <div class="block block-dashboard-orders">
+        <div class="block-content" style="margin-top: 10px">
+            <div class="table-wrapper orders-recent">
+                <table class="data table table-order-items recent" id="my-orders-table">
+                    <caption class="table-caption">Recent Orders</caption>
+                    <thead>
+                    <tr>
+                        <th scope="col" class="col id">Order #<?php echo $incrementId ?></th>
+                        <th scope="col" class="col date"><?php echo $datePurchase; ?></th>
+                        <th scope="col" class="col total"><?php echo count($orderCollection->getAllItems()) ?> <?php echo __("items") ?></th>
+                        <th scope="col" class="col status"></th>
+                        <th scope="col" class="col actions"><?php echo __("Total Price : ") ?><?php echo $orderTotal; ?></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php $allitems = $orderCollection->getAllItems(); ?>
+                    <?php $order_id_temp = ""; ?>
+                    <?php foreach($allitems as $item){ ?>
+                        <?php
+                        //var_dump($_product->getData());
+                        ?>
+                        <?php
+                        $hasOption = false;
+                        //$optionsArrayChildren = array();
+                        //$optionsArray = array();
+                        $nameProduct = "";
+                        $product_id = $item->getProductId();
+                        $options = $item->getProductOptions();
+                        $hasChildren = false;
+                        if($order_id_temp == $item->getData("order_id")){
+                            $hasChildren = true;
+                        }
+                        if (isset($options["info_buyRequest"]["super_attribute"])) {
+                            $hasOption = true;
+                            //$inforAttribute = $options["attributes_info"];
+                            $nameProduct = $item->getName();
+                            /*foreach ($inforAttribute as $_infor) {
+                                $optionsArrayChildren["label"] = $_infor["label"];
+                                $optionsArrayChildren["value"] = $_infor["value"];
+                                $optionsArray[] = $optionsArrayChildren;
+                            }*/
+                        } else {
+                            $nameProduct = $item->getName();
+                        }
+                        $_product = $objectManager->create('Magento\Catalog\Model\Product')->load($product_id);
+                        $image_url = $block->resizeImage($_product,"product_base_image",50,50)->getUrl();
+                        $price = intval($item->getData("base_row_total"));
+                        $order_id_temp = $item->getData("order_id");
+                        $qty = intval($item->getData("qty_ordered"));
+                        ?>
+                        <tr class="data table table-order-items history open_product" id="open_product_<?php echo $orderCollection->getData("entity_id") ?>">
+                            <?php if($hasChildren == false){ ?>
+                            <td data-th="Order #" class="col id">
+                                <input type="radio" name="check_return_product" value="item_<?php echo $orderCollection->getData("entity_id")  ?>_<?php echo $orderCollection->getIncrementId() ?>_<?php echo $product_id;  ?>_<?php echo $nameProduct ?> / QTY <?php echo $qty; ?>" id="check_<?php echo $orderCollection->getData("entity_id")  ?>_<?php echo $product_id;  ?>"/>
+                            </td>
+                            <?php }else{ ?>
+                                <td data-th="Order #" class="col id">
+                                    <input type="radio" disabled="disabled" name="check_return_product_disable" value="item_<?php echo $orderCollection->getData("entity_id")  ?>_<?php echo $orderCollection->getIncrementId() ?>_<?php echo $product_id;  ?>_<?php echo $nameProduct ?> / QTY <?php echo $qty; ?>" id="check_<?php echo $orderCollection->getData("entity_id")  ?>_<?php echo $product_id;  ?>"/>
+                                </td>
+                            <?php }?>
+                            <td data-th="Date" class="col date">
+                                <img src="<?php echo $image_url; ?>"/>
+                            </td>
+                            <td data-th="Ship To" class="col shipping">
+                                <?php echo $nameProduct; ?>
+                                <br/>
+                            </td>
+                            <td data-th="Order Total" class="col total">
+                                <span class="price"><?php echo $price; ?> <?php echo __("VND"); ?></span>
+                            </td>
+                            <td data-th="Status" class="col status">
+                                Buy : <?php echo $qty ?>
+                            </td>
+                        </tr>
+                        <?php
+                    }
+                    ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    require([
+        'jquery',
+        'Magento_Ui/js/modal/modal'
+    ], function ( $,modal ) {
+        $("#request_return_<?php echo $incrementId;  ?>").click(function(){
+            /*$.ajax(function(){
+
+            });*/
+            $("#popup-modal_<?php echo $incrementId;  ?>").modal(options).modal('openModal');
+        });
+        function openProduct(elem){
+            $(".open_product").slideUp();
+            var elemnet = $(elem);
+            var textToOpen = elemnet.attr("href");
+            $(textToOpen).slideDown();
+        }
+        var options = {
+            type: 'popup',
+            responsive: true,
+            innerScroll: true,
+            title: 'Select an order',
+            buttons: [{
+                text: $.mage.__('Next Step'),
+                class: '',
+                click: function () {
+                    //this.closeModal();
+                    var stringValue = $('input[name=check_return_product]:checked').val();
+                    console.log(stringValue);
+                    var splitArray = stringValue.split("_");
+                    $("#order_number").html(splitArray[2]);
+                    $("#returning_product_name").html(splitArray[4]);
+                    $("#id_order").val(splitArray[1]);
+                    $("#id_product").val(splitArray[3]);
+                    var options_next_step = {
+                        type: 'popup',
+                        responsive: true,
+                        innerScroll: true,
+                        buttons: [{
+                            text: $.mage.__('Submit'),
+                            class: '',
+                            click: function () {
+                                $("#sub_mit_request").submit();
+                            }
+                        }]
+                    };
+                    $("#popup-modal-next-step").modal(options_next_step).modal('openModal');
+                }
+            }]
+        };
+
+    });
+</script>
+<?php endforeach; ?>
+<div class="block block-dashboard-orders">
+    <div class="block-title order">
+        <strong><?php echo __("Return List") ?></strong>
+    </div>
+    <div class="block-content">
+        <div class="table-wrapper orders-history">
+            <table class="data table table-order-items history" id="my-request-table">
+                <tbody>
+                <?php foreach($dataReturnProduct as $_ticket): ?>
+                    <?php
+                    $order_id = $_ticket->getData('order_id');
+                    $order = $objectManager->create('\Magento\Sales\Model\Order')->load($order_id);
+                    $items = $order->getAllItems();
+                    $hasOption = false;
+                    $optionsArrayChildren = array();
+                    $optionsArray = array();
+                    $nameProduct = "";
+                    $price = $_ticket->getData("price_return");
+                    $product_id = $_ticket->getData("product_id");
+                    foreach($items as $_product){
+                        $options = $_product->getProductOptions();
+                        if($product_id == $_product->getProductId()) {
+                            //echo "<pre>";
+                            //var_dump($options);
+                            //echo "</pre>";
+                            if (isset($options["info_buyRequest"]["super_attribute"])) {
+                                $hasOption = true;
+                                $inforAttribute = $options["attributes_info"];
+                                $nameProduct = $_product->getName();
+                                foreach ($inforAttribute as $_infor) {
+                                    $optionsArrayChildren["label"] = $_infor["label"];
+                                    $optionsArrayChildren["value"] = $_infor["value"];
+                                    $optionsArray[] = $optionsArrayChildren;
+                                }
+                                break;
+                            } else {
+                                $nameProduct = $_product->getName();
+                            }
+                        }
+                    }
+                    $_product = $objectManager->create('Magento\Catalog\Model\Product')->load($product_id);
+                    $image_url = $block->resizeImage($_product,"product_base_image",50,50)->getUrl();
+                    $status = $_ticket->getData("status");
+                    $modelStatus = $objectManager->create('Libero\RMA\Model\RequestStatus')->load($status);
+                    ?>
+                <tr>
+                    <td data-th="Order #" class="col id">
+                        <span><?php echo $_ticket->getData("create_at") ?></span>
+                        <span>(<?php echo $_ticket->getData("id_request") ?>)</span>
+                        <br/>
+                        <span>Price: <?php echo number_format($price,0,',','.'); ?> VND</span>
+                    </td>
+                    <td data-th="Date" class="col date">
+                        <img src="<?php echo $image_url; ?>"/>
+                    </td>
+                    <td data-th="Ship To" class="col shipping">
+                        <?php echo $nameProduct; ?>
+                        <br/>
+                        <span>
+                            <?php foreach($optionsArray as $_option){ ?>
+                                <span><?php echo  $_option["label"]; ?></span> : <span><?php echo  $_option["value"]; ?></span>
+                                <br/>
+                            <?php } ?>
+                        </span>
+                    </td>
+                    <td data-th="Order Total" class="col total">
+                        <span class="price"><?php echo $modelStatus->getData("status_label"); ?></span>
+                    </td>
+                    <td data-th="Status" class="col status">
+                        Updated
+                        <br/>
+                        (<?php echo $_ticket->getData("update_at"); ?>)
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!--<div class="actions-toolbar" style="clear: both;float: right;">
+    <div class="primary">
+        <button type="button" id="request_return" class="action save primary" title="<?php echo $this->helper(\Magento\Framework\EscapeHelper::class)->escapeHtmlAttr(__('Request Return')) ?>"><span><?php echo $block->escapeHtml(__('Request Return')) ?></span></button>
+    </div>
+</div>-->
+<div id="popup-modal-next-step" style="display: none">
+    <form name="sub_mit_request" id="sub_mit_request" method="post" action="<?php echo $block->escapeUrl($block->getUrl('rma/returnproduct/save')) ?>">
+        <h1>Order Number: <span id="order_number"></span></h1>
+        <input type="hidden" value="" id="id_order" name="id_order">
+        <input type="hidden" value="" id="id_product" name="id_product">
+        <input type="hidden" value="<?php echo $block->getNameCustomer(); ?>" name="customer_name">
+        <input type="hidden" value="<?php echo $block->getEmailCustomer(); ?>" name="customer_email">
+        <div class="infor_retunring">
+            <p><?php echo __("You are returning the following items:"); ?></p>
+            <ul>
+                <li id="returning_product_name">
+
+                </li>
+            </ul>
+        </div>
+        <div class="return_reason" style="clear: both;display:inline-block;width: auto">
+            <?php
+            $modelReason =  $objectManager->create('Libero\RMA\Model\RequestReason')->getCollection();
+            $modelPackage = $objectManager->create('Libero\RMA\Model\RequestPackage')->getCollection();
+            $modelResolution = $objectManager->create('Libero\RMA\Model\RequestResolution')->getCollection();
+            ?>
+            <label for="select_reason">Return Reason</label>
+            <select name="select_reason">
+                <?php foreach($modelReason as $_reason): ?>
+                <option value="<?php echo $_reason->getData("id_reason"); ?>">
+                    <?php echo $_reason->getData("reason_label"); ?>
+                </option>
+                <?php endforeach; ?>
+            </select>
+            <p></p>
+            <label for="select_reason">Package Condition</label>
+            <select name="select_package">
+                <?php foreach($modelPackage as $_reason): ?>
+                <option value="<?php echo $_reason->getData("id_package"); ?>">
+                    <?php echo $_reason->getData("package_label"); ?>
+                </option>
+                <?php endforeach; ?>
+            </select>
+            <p></p>
+            <label for="select_resolution">Desired Resolution</label>
+            <select name="select_resolution">
+                <?php foreach($modelResolution as $_reason): ?>
+                <option value="<?php echo $_reason->getData("id_resolution"); ?>">
+                    <?php echo $_reason->getData("resolution_label"); ?>
+                </option>
+                <?php endforeach; ?>
+            </select>
+            <p></p>
+            <label for="message_note">Message</label>
+            <textarea name="message_note"></textarea>
+        </div>
+        <p></p>
+    </form>
+</div>
+<script>
+    require([
+        'jquery',
+        'mage/calendar',
+        'Magento_Ui/js/modal/modal'
+    ], function ( $,modal ) {
+        $( "#from_date" ).datepicker();
+        $( "#to_date" ).datepicker();
+    });
+</script>

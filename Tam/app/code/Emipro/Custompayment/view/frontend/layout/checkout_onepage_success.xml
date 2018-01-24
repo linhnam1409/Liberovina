@@ -1,0 +1,12 @@
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+<head>
+    <title>Success Custom Page</title>
+</head>
+<body>
+    <referenceContainer name="content">
+        <block class="Emipro\Custompayment\Block\Success" name="emipro.checkout.success" template="Emipro_Custompayment::success.phtml" cacheable="false">
+            <container name="order.success.additional.info" label="Order Success Additional Info"/>
+        </block>
+    </referenceContainer>
+</body>
+</page>
