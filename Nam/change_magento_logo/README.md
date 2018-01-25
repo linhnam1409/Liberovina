@@ -1,20 +1,20 @@
-#Purpose
+# Purpose
 
 Change Magento logo in Dashboard
 
-##Change Magento logo on login Dashboard page
+## Change Magento logo on login Dashboard page
 
 * Change vendor\magento\module-backend\view\adminhtml\layout\admin_login.xml
 
 * Create new logo file vendor\magento\theme-adminhtml-backend\web\images\wisi-logo-text.png
 
-##Change Magento logo on head of Dashboard page
+## Change Magento logo on head of Dashboard page
 
 * Change vendor\magento\module-backend\view\adminhtml\layout\default.xml
 
 * Create new logo file vendor\magento\theme-adminhtml-backend\web\images\wisi-logo.png
 
-##Change Magento logo on footer of Dashboard page
+## Change Magento logo on footer of Dashboard page
 
 * Change vendor\magento\module-backend\view\adminhtml\templates\page\copyright.phtml
 
