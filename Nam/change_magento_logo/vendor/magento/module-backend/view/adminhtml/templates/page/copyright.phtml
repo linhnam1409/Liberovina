@@ -1,0 +1,20 @@
+<?php
+/**
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+?>
+<style>
+.ico {display: inline-block; width: 24px; height: 24px;}
+.ico-wisi-logo {background: url(<?php echo $block->getViewFileUrl('images/wisi-logo.png') ?>) no-repeat; background-size: contain;}
+.link-copyright:before {display: none !important;}
+.login-footer .link-copyright {height: 24px; display: inline-block; vertical-align: middle;}
+</style>
+
+<a class="link-copyright" href="#" target="_blank" title="<?php /* @escapeNotVerified */ echo __('GiftBank') ?>">
+	<i class="ico ico-wisi-logo"></i>
+</a>
+<?php /* @escapeNotVerified */ echo __('Copyright &copy; %1 by GiftBank.vn - All right reserved.', date('Y')) ?>
